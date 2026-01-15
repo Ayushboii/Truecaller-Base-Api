@@ -7,6 +7,7 @@ TC_URL = "https://search5-noneu.truecaller.com/v2/search"
 TC_HEADERS = {
     "User-Agent": "Truecaller/16.7.8 (Android;15)",
     "Accept": "*/*",
+    "Accept-Encoding": "identity",   # 🔥 IMPORTANT
     "authorization": "Bearer a2i0s--yWJylvVeF5FNGuh_MJUR2txVpAypP6YUD8otXzdsGeFywFDMok8-DqMou"
 }
 
@@ -28,13 +29,15 @@ def raw():
         timeout=10
     )
 
-    # 🔥 EXACT upstream response
+    # 🔥 REMOVE problematic headers
+    headers = {}
+    if "content-type" in r.headers:
+        headers["Content-Type"] = r.headers["content-type"]
+
     return Response(
-        r.content,                      # binary/text jo bhi ho
+        r.content,
         status=r.status_code,
-        headers={
-            "Content-Type": r.headers.get("content-type", "text/plain")
-        }
+        headers=headers
     )
 
 if __name__ == "__main__":
